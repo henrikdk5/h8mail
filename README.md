@@ -4,7 +4,7 @@
 
 [![platforms](https://img.shields.io/badge/platforms-Windows%20%7C%20Linux%20%7C%20OSX-success.svg)](https://pypi.org/project/h8mail/) [![PyPI version](https://badge.fury.io/py/h8mail.svg)](https://badge.fury.io/py/h8mail)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/h8mail.svg)](https://pypi.org/project/h8mail/) [![Downloads](https://pepy.tech/badge/h8mail)](https://pepy.tech/project/h8mail)    [![travis](https://img.shields.io/travis/khast3x/h8mail.svg)](https://travis-ci.org/khast3x/h8mail)   
-[![Docker Pulls](https://img.shields.io/docker/pulls/kh4st3x00/h8mail.svg)](https://hub.docker.com/r/kh4st3x00/h8mail) [![MicroBadger Size (tag)](https://img.shields.io/microbadger/image-size/kh4st3x00/h8mail.svg?color=ok)](https://hub.docker.com/r/kh4st3x00/h8mail/builds)  
+[![Docker Pulls](https://img.shields.io/docker/pulls/kh4st3x00/h8mail.svg)](https://hub.docker.com/r/kh4st3x00/h8mail)    
 **h8mail** is an email OSINT and breach hunting tool using [different breach and reconnaissance services](#apis), or local breaches such as Troy Hunt's "Collection1" and the infamous "Breach Compilation" torrent.  
 
 ----
@@ -40,7 +40,7 @@
 * :dizzy: Loosey patterns for local searchs ("john.smith", "evilcorp")
 * :package: Painless install. Available through `pip`, only requires `requests`
 * :white_check_mark: Bulk file-reading for targeting
-* :memo: Output to CSV file
+* :memo: Output to CSV file or JSON
 * :muscle: Compatible with the "Breach Compilation" torrent scripts
 * :house: Search cleartext and compressed .gz files locally using multiprocessing
   * :cyclone: Compatible with "Collection#1"
@@ -60,7 +60,6 @@
 
 
 ####  APIs
-
 | Service | Functions | Status |
 |-|-|-|
 | [HaveIBeenPwned(v3)](https://haveibeenpwned.com/) | Number of email breaches | :white_check_mark: :key: |
@@ -71,9 +70,10 @@
 | [Leak-Lookup](https://leak-lookup.com/) - Public | Number of search-able breach results | :white_check_mark: (:key:) |
 | [Leak-Lookup](https://leak-lookup.com/) - Service | Cleartext passwords, hashs and salts, usernames, IPs, domain | :white_check_mark: :key: |
 | [Emailrep.io](https://emailrep.io/) - Service (free) | Last seen in breaches, social media profiles | :white_check_mark: :key: |
-| [Scylla.sh](https://scylla.sh/) - Service (free) | Cleartext passwords, hashs and salts, usernames, IPs, domain | :white_check_mark: |
+| [scylla.so](https://scylla.so/) - Service (free) | Cleartext passwords, hashs and salts, usernames, IPs, domain | :construction: |
 | [Dehashed.com](https://dehashed.com/) - Service | Cleartext passwords, hashs and salts, usernames, IPs, domain | :white_check_mark: :key: |
-| :new: [IntelX.io](https://intelx.io/signup) - Service (free trial) | Cleartext passwords, hashs and salts, usernames, IPs, domain, Bitcoin Wallets, IBAN | :white_check_mark: :key: |
+| [IntelX.io](https://intelx.io/signup) - Service (free trial) | Cleartext passwords, hashs and salts, usernames, IPs, domain, Bitcoin Wallets, IBAN | :white_check_mark: :key: |
+| :new: [Breachdirectory.tk](https://breachdirectory.tk) - Service (free) | Cleartext passwords, hashs and salts, usernames, domain | :white_check_mark: :key: |
 
 *:key: - API key required*  
 
@@ -88,12 +88,13 @@
 usage: h8mail [-h] [-t USER_TARGETS [USER_TARGETS ...]]
               [-u USER_URLS [USER_URLS ...]] [-q USER_QUERY] [--loose]
               [-c CONFIG_FILE [CONFIG_FILE ...]] [-o OUTPUT_FILE]
-              [-bc BC_PATH] [-sk] [-k CLI_APIKEYS [CLI_APIKEYS ...]]
+              [-j OUTPUT_JSON] [-bc BC_PATH] [-sk]
+              [-k CLI_APIKEYS [CLI_APIKEYS ...]]
               [-lb LOCAL_BREACH_SRC [LOCAL_BREACH_SRC ...]]
               [-gz LOCAL_GZIP_SRC [LOCAL_GZIP_SRC ...]] [-sf]
               [-ch [CHASE_LIMIT]] [--power-chase] [--hide] [--debug]
               [--gen-config]
-              
+
 Email information and password lookup tool
 
 optional arguments:
@@ -119,11 +120,12 @@ optional arguments:
                         Emailrep, Dehashed and hunterio
   -o OUTPUT_FILE, --output OUTPUT_FILE
                         File to write CSV output
+  -j OUTPUT_JSON, --json OUTPUT_JSON
+                        File to write JSON output
   -bc BC_PATH, --breachcomp BC_PATH
                         Path to the breachcompilation torrent folder. Uses the
                         query.sh script included in the torrent
-  -sk, --skip-defaults  Skips HaveIBeenPwned and HunterIO check. Ideal for
-                        local scans
+  -sk, --skip-defaults  Skips Scylla and HunterIO check. Ideal for local scans
   -k CLI_APIKEYS [CLI_APIKEYS ...], --apikey CLI_APIKEYS [CLI_APIKEYS ...]
                         Pass config options. Supported format: "K=V,K=V"
   -lb LOCAL_BREACH_SRC [LOCAL_BREACH_SRC ...], --local-breach LOCAL_BREACH_SRC [LOCAL_BREACH_SRC ...]
@@ -152,6 +154,7 @@ optional arguments:
   --gen-config, -g      Generates a configuration file template in the current
                         working directory & exits. Will overwrite existing
                         h8mail_config.ini file
+
 ```
 
 -----
@@ -222,8 +225,9 @@ $ h8mail -u "https://pastebin.com/raw/kQ6WNKqY" "list_of_urls.txt"
 * h8mail's Pypi integration is strongly based on the work of audreyr's [CookieCutter PyPackage](https://github.com/audreyr/cookiecutter-pypackage)
 * Logo generated using Hatchful by Shopify
 * [Jake Creps](https://twitter.com/jakecreps) for his [h8mail v2 introduction](https://jakecreps.com/2019/06/21/h8mail/)  
-* [Alejandro Caceres](https://twitter.com/_hyp3ri0n) for making scylla.sh available. Be sure to [support](https://www.buymeacoffee.com/Eiw47ImnT) him if you can
+* [Alejandro Caceres](https://twitter.com/_hyp3ri0n) for making scylla.so available. Be sure to [support](https://www.buymeacoffee.com/Eiw47ImnT) him if you can
 * [IntelX](https://intelx.io) for being developer friendly
+* [Breachdirectory.tk](https://breachdirectory.tk) for being developer friendly
 
 :purple_heart: **h8mail can be found in:**
 * [BlackArch Linux](https://blackarch.org/recon.html)
